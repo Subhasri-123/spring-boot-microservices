@@ -17,7 +17,7 @@ public class MovieCatalogController {
 	@GetMapping("/{userId}")
 	public List<CatalogItem> getCatalogItem(@PathVariable("userId") String userId) {
 		
-		return Collections.singletonList(new CatalogItem("Titanic","Test",4));
+		return Collections.singletonList(new CatalogItem("Titanic","Test",4));//
 	}
 	
 }
