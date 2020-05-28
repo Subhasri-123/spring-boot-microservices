@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.demo.model.CatalogItem;
 import com.example.demo.model.Movie;
 import com.example.demo.model.Rating;
+import com.example.demo.model.UserRating;
 
 @RestController
 @RequestMapping("/catalog")
@@ -28,9 +29,6 @@ public class MovieCatalogController {
 
 	@GetMapping("/{userId}")
 	public List<CatalogItem> getCatalogItem(@PathVariable("userId") String userId) {
-		
-		
-		//Movie movie = restTemplate.getForObject("http://localhost:8083/movies/foo", Movie.class);
 		
 		List<Rating> ratings = Arrays.asList(
 				new Rating("1234", 5),
@@ -46,7 +44,21 @@ public class MovieCatalogController {
 			 */
 			return new CatalogItem(movie.getName(), "Desc", rating.getRating());
 		}).collect(Collectors.toList());
+		
+		
 		//return Collections.singletonList(new CatalogItem("Titanic","Test",4));
+	}
+	@GetMapping("/user/{userid}")
+	public List<CatalogItem> getCatalogitem(@PathVariable("userid") String userid) {
+		UserRating ratings = restTemplate.getForObject("http://localhost:8084/ratingsdata/users/" + userid, UserRating.class);
+		return ratings.getUserRatings().stream().map(rating -> {
+			Movie movie = restTemplate.getForObject("http://localhost:8083/movies/" + rating.getMovieId(), Movie.class);
+			return new CatalogItem(movie.getName(), "Desc", rating.getRating());
+		}).collect(Collectors.toList());
+			
+			
+		
+		
 	}
 	
 }
